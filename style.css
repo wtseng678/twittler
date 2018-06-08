@@ -1,0 +1,28 @@
+#main_container{
+	width: 100%; 
+}
+
+#tweet_container{
+	width: 90%; 
+	margin: 0px auto; 
+}
+
+#logo{
+	width: 50%;
+	font-size: 48px;
+	font-family: 'Arial', sans-serif;
+	font-weight: bold;  
+}
+
+
+#show_tweets_button {
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+}
+
+#tweet_container {
+	box-shadow: inset 0px 0px 30px rgba(15, 15, 15, 0.14);
+	padding: 20px; 
+	font-family: 'Arial', sans-serif;
+}
+

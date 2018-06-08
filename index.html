@@ -3,25 +3,89 @@
   <head>
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
   </head>
-  <body>
-    <script>
+  <body style="background-color:powderblue;">
+    <div id="main_container">
+      <div id="tweet_container">
+        <div id="logo"> Twittler </div> 
+        <div id="show_tweets_button"> <!-- Show new tweets -->
+          <button id="show_new">Show New Tweets</button>
+          <button id="remove_filter">Remove Filter</button>
+        </div>      
+        <div id="tweets"></div> <!-- Contains the tweets --> 
 
-      $(document).ready(function(){
-        var $body = $('body');
-        $body.html('');
 
-        var index = streams.home.length - 1;
-        while(index >= 0){
-          var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
-          $tweet.appendTo($body);
-          index -= 1;
-        }
+        </div> 
+    </div>
+        <script>
+          var filtered = false;
+          var total = 0; // total tweets
+          var counter = 0; // tweet counter
+          var diff = 0; // difference between displayed tweets and tweets in array (measured by watch())
+          $(document).ready(function(){
+            $('#tweet_number').on("click", showTweets);
+            $('#show_new').on("click", showTweets);
+            $('#remove_filter').hide();
+              
+            var index = streams.home.length - 1;
 
-      });
+            while(index >= 0){
+              var tweet = streams.home[index];
+              var $tweet = $("<div id='tweet'></div>");
+              var date = new Date();
+              $tweet.html("<span id='at'>@" + "</span>" + "<a href='#'' class=user>" + tweet.user + "</a>" + ' at ' + date + ': ' + tweet.message);
+              $tweet.prependTo($('#tweets'));
+              total++; 
+              index -= 1;
+            }
 
-    </script>
+
+            function watch(){
+              counter = streams.home.length - 1;
+              diff = counter - total; 
+              setTimeout(watch, 100);
+            }
+            watch();        
+
+            // Note: Still very buggy.  On first click everything is highlighted, but after resetting everything works fine.
+            // After showing new tweets, all new tweets are highlighted (until reset) but older tweets are highlighted correctly.
+            $("#tweets").on("click", "a", function(event) {
+              var filter = this.text;
+
+              $("div:contains('" + filter + "')").css('color', 'red');
+
+              $("#remove_filter").show();
+              filtered = true;
+            });
+
+            // Restores all tweets 
+            $("#remove_filter").on("click", function() {
+              $('div').css('color', 'black');
+              $("#remove_filter").hide();
+              filtered = false;
+            });
+
+
+
+          }); // End Document Ready
+
+          // Show tweets
+          function showTweets(filter){
+            var tweets = filtered ? streams.users[filter] : streams.home;
+            while(diff >= 1){
+              var tweet = streams.home[diff]; 
+              var $tweet = $("<div id='tweet'></div>");
+              $tweet.html("<span id='at'>@" + "</span>" + "<a href='#' class=user>" + tweet.user + "</a>" + ': ' + tweet.message);
+              $tweet.prependTo($('#tweets')).hide().fadeIn("slow");
+              total++; 
+              diff -= 1;
+            }
+          }
+
+
+
+        </script>
+      
   </body>
 </html>
